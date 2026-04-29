@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لامسة — لوحة التحكم</title>
+  <link rel="icon" href="images/logo/lamsa-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --amber-50:#fffbeb;--amber-100:#fef3c7;--amber-200:#fde68a;--amber-300:#fcd34d;
+      --amber-400:#fbbf24;--amber-500:#f59e0b;--amber-600:#d97706;--amber-700:#b45309;
+      --amber-800:#92400e;--amber-900:#78350f;
+      --red-50:#fef2f2;--red-100:#fee2e2;--red-200:#fecaca;--red-500:#ef4444;--red-700:#b91c1c;
+      --green-100:#dcfce7;--green-600:#16a34a;--green-700:#15803d;
+      --blue-100:#dbeafe;--blue-600:#2563eb;--blue-800:#1e40af;
+      --yellow-100:#fef9c3;--yellow-800:#854d0e;
+      --emerald-100:#d1fae5;--emerald-800:#065f46;
+      --purple-100:#f3e8ff;--purple-600:#9333ea;
+      --white:#ffffff;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family:'Noto Sans Arabic','Segoe UI',Tahoma,sans-serif;
+      background:rgba(255,251,235,0.3);color:var(--amber-900);line-height:1.7;
+      -webkit-font-smoothing:antialiased;min-height:100vh;
+    }
+    img { max-width:100%; height:auto; display:block; }
+    button { cursor:pointer; font-family:inherit; }
+    input,select { font-family:inherit; }
+    a { text-decoration:none; color:inherit; }
+    .container { width:100%; max-width:1100px; margin:0 auto; padding:0 16px; }
+
+    /* LOGIN */
+    .login-page {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:var(--amber-50); padding:16px;
+    }
+    .login-card {
+      background:var(--white); border:1px solid var(--amber-200); border-radius:16px;
+      padding:32px; max-width:380px; width:100%; box-shadow:0 8px 24px rgba(120,53,15,0.1);
+    }
+    .login-card h2 { text-align:center; font-size:1.3rem; font-weight:800; color:var(--amber-900); margin-bottom:20px; }
+    .login-card .field { margin-bottom:16px; }
+    .login-card label { display:block; font-weight:600; color:var(--amber-900); margin-bottom:6px; font-size:0.9rem; }
+    .login-card input {
+      width:100%; padding:12px 14px; border:1px solid var(--amber-200); border-radius:10px;
+      font-size:0.95rem; background:var(--white); color:var(--amber-900); transition:border-color 0.2s;
+    }
+    .login-card input:focus { outline:none; border-color:var(--amber-500); box-shadow:0 0 0 3px rgba(245,158,11,0.15); }
+    .login-card .error { color:var(--red-500); font-size:0.8rem; margin-top:6px; text-align:center; }
+    .login-btn {
+      width:100%; padding:14px; background:var(--amber-800); color:var(--white);
+      font-size:1rem; font-weight:700; border:none; border-radius:10px; transition:background 0.2s;
+    }
+    .login-btn:hover { background:var(--amber-900); }
+
+    /* DASHBOARD */
+    .dashboard { display:none; }
+    .dashboard.show { display:block; }
+    .dash-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:20px 0; border-bottom:1px solid var(--amber-200); margin-bottom:24px;
+    }
+    .dash-header h1 { font-size:1.3rem; font-weight:800; color:var(--amber-900); display:flex; align-items:center; gap:8px; }
+    .dash-header .actions { display:flex; gap:8px; }
+    .btn {
+      padding:10px 16px; border-radius:10px; font-size:0.85rem; font-weight:600;
+      border:1px solid var(--amber-200); background:var(--white); color:var(--amber-800);
+      transition:all 0.2s; display:inline-flex; align-items:center; gap:6px;
+    }
+    .btn:hover { background:var(--amber-50); border-color:var(--amber-300); }
+    .btn-primary { background:var(--amber-800); color:var(--white); border-color:var(--amber-800); }
+    .btn-primary:hover { background:var(--amber-900); }
+    .btn-danger { background:var(--red-700); color:var(--white); border-color:var(--red-700); }
+    .btn-danger:hover { background:#991b1b; }
+
+    /* SETUP CARD */
+    .setup-card {
+      background:var(--white); border:2px solid var(--amber-300); border-radius:16px;
+      padding:24px; margin-bottom:24px;
+    }
+    .setup-card h3 { font-size:1.1rem; font-weight:700; color:var(--amber-900); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .setup-card p { color:var(--amber-700); font-size:0.9rem; margin-bottom:12px; line-height:1.8; }
+    .setup-card ol { color:var(--amber-700); font-size:0.85rem; padding-right:20px; margin-bottom:16px; line-height:2; }
+    .setup-card ol code { background:var(--amber-100); padding:2px 6px; border-radius:4px; font-size:0.8rem; direction:ltr; }
+    .setup-card .url-row { display:flex; gap:8px; }
+    .setup-card input {
+      flex:1; padding:12px 14px; border:1px solid var(--amber-200); border-radius:10px;
+      font-size:0.9rem; direction:ltr; color:var(--gray-700);
+    }
+    .setup-card input:focus { outline:none; border-color:var(--amber-500); }
+
+    /* STATS */
+    .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
+    .stat-card {
+      background:var(--white); border:1px solid var(--amber-200); border-radius:12px;
+      padding:16px; text-align:center;
+    }
+    .stat-card .icon { font-size:1.5rem; margin-bottom:6px; }
+    .stat-card .number { font-size:1.75rem; font-weight:800; color:var(--amber-900); }
+    .stat-card .label { font-size:0.8rem; color:var(--amber-600); }
+
+    /* FILTERS */
+    .filters-card {
+      background:var(--white); border:1px solid var(--amber-200); border-radius:12px;
+      padding:16px; margin-bottom:16px;
+    }
+    .filters-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+    .filter-group { display:flex; align-items:center; gap:6px; }
+    .filter-group label { font-size:0.85rem; font-weight:600; color:var(--amber-900); white-space:nowrap; }
+    .filter-group select {
+      padding:8px 12px; border:1px solid var(--amber-200); border-radius:8px;
+      font-size:0.85rem; color:var(--amber-900); background:var(--white);
+    }
+    .filter-group select:focus { outline:none; border-color:var(--amber-500); }
+
+    /* TABLE */
+    .table-card {
+      background:var(--white); border:1px solid var(--amber-200); border-radius:12px;
+      overflow:hidden;
+    }
+    .table-wrapper { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+    thead { background:var(--amber-50); }
+    th {
+      padding:12px 14px; text-align:right; font-weight:700; color:var(--amber-900);
+      border-bottom:1px solid var(--amber-200); white-space:nowrap;
+    }
+    td {
+      padding:10px 14px; border-bottom:1px solid var(--amber-100); color:var(--amber-800);
+      vertical-align:middle;
+    }
+    tr:hover td { background:rgba(255,251,235,0.5); }
+    .phone-cell { direction:ltr; text-align:left; font-family:monospace; }
+    .status-badge {
+      display:inline-block; padding:3px 10px; border-radius:9999px;
+      font-size:0.75rem; font-weight:600;
+    }
+    .status-new { background:var(--blue-100); color:var(--blue-800); }
+    .status-contacted { background:var(--yellow-100); color:var(--yellow-800); }
+    .status-confirmed { background:var(--green-100); color:var(--green-700); }
+    .status-delivered { background:var(--emerald-100); color:var(--emerald-800); }
+    .status-cancelled { background:var(--red-100); color:var(--red-700); }
+    .action-cell { display:flex; gap:4px; align-items:center; }
+    .status-select {
+      padding:4px 8px; border:1px solid var(--amber-200); border-radius:6px;
+      font-size:0.75rem; color:var(--amber-900); background:var(--white);
+    }
+    .view-btn {
+      padding:4px 8px; border-radius:6px; border:none;
+      background:var(--amber-100); color:var(--amber-700); font-size:0.75rem;
+      transition:background 0.2s;
+    }
+    .view-btn:hover { background:var(--amber-200); }
+
+    .empty-state { text-align:center; padding:48px 16px; color:var(--amber-600); }
+    .loading-state { text-align:center; padding:48px 16px; }
+    .spinner {
+      display:inline-block; width:32px; height:32px;
+      border:3px solid var(--amber-200); border-top-color:var(--amber-700);
+      border-radius:50%; animation:spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* DETAIL MODAL */
+    .modal-overlay {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+      z-index:100; align-items:center; justify-content:center; padding:16px;
+    }
+    .modal-overlay.show { display:flex; }
+    .modal-box {
+      background:var(--white); border-radius:16px; max-width:440px; width:100%;
+      padding:24px; animation:slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .modal-box h3 { font-size:1.1rem; font-weight:800; color:var(--amber-900); margin-bottom:16px; }
+    .detail-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 0; border-bottom:1px solid var(--amber-100);
+    }
+    .detail-row .dlabel { color:var(--amber-600); font-size:0.85rem; }
+    .detail-row .dvalue { color:var(--amber-900); font-weight:600; font-size:0.85rem; }
+    .modal-close {
+      width:100%; padding:12px; margin-top:16px; border:1px solid var(--amber-200);
+      border-radius:10px; background:var(--white); color:var(--amber-800);
+      font-size:0.9rem; font-weight:600; transition:background 0.2s;
+    }
+    .modal-close:hover { background:var(--amber-50); }
+
+    /* SETUP MODAL */
+    .code-block {
+      background:var(--gray-700); color:#e5e7eb; padding:16px; border-radius:10px;
+      font-family:monospace; font-size:0.78rem; line-height:1.7; overflow-x:auto;
+      direction:ltr; text-align:left; margin:12px 0; white-space:pre;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width:640px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+      .filters-row { flex-direction:column; align-items:stretch; }
+      .filter-group { width:100%; }
+      .filter-group select { flex:1; }
+      .dash-header { flex-direction:column; gap:12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <h2>🔐 لوحة التحكم</h2>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')handleLogin()" />
+      </div>
+      <div class="error" id="loginError"></div>
+      <button class="login-btn" onclick="handleLogin()">دخول</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard" id="dashboard">
+    <div class="container">
+      <!-- Header -->
+      <div class="dash-header">
+        <h1>📊 لوحة تحكم لامسة</h1>
+        <div class="actions">
+          <button class="btn" onclick="toggleSetup()">⚙️ إعدادات</button>
+          <button class="btn" onclick="handleRefresh()">🔄 تحديث</button>
+          <button class="btn btn-danger" onclick="handleLogout()">خروج</button>
+        </div>
+      </div>
+
+      <!-- Setup Card (hidden by default) -->
+      <div class="setup-card" id="setupCard" style="display:none;">
+        <h3>🔗 ربط Google Sheets</h3>
+        <p>لربط الطلبات مع Google Sheets، اتبع الخطوات التالية:</p>
+        <ol>
+          <li>أنشئ جدول Google Sheet جديد</li>
+          <li>اذهب إلى <code>Extensions → Apps Script</code></li>
+          <li>الصق كود Apps Script (اضغط الزر أسفله لنسخه)</li>
+          <li>اضغط <code>Deploy → New deployment</code> — Type: <code>Web app</code> — Access: <code>Anyone</code></li>
+          <li>انسخ رابط Web App والصقه هنا</li>
+        </ol>
+        <button class="btn" onclick="showScriptCode()" style="margin-bottom:12px;">📋 عرض كود Apps Script</button>
+        <div class="url-row">
+          <input type="text" id="sheetsUrlInput" placeholder="https://script.google.com/macros/s/..." />
+          <button class="btn btn-primary" onclick="saveSheetsUrl()">حفظ</button>
+        </div>
+        <div id="sheetsSaveMsg" style="margin-top:8px; font-size:0.85rem;"></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="icon">📦</div>
+          <div class="number" id="statTotal">0</div>
+          <div class="label">إجمالي الطلبات</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon">🆕</div>
+          <div class="number" id="statNew">0</div>
+          <div class="label">طلبات جديدة</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon">💰</div>
+          <div class="number" id="statRevenue">0</div>
+          <div class="label">إجمالي الأرباح (د.ج)</div>
+        </div>
+        <div class="stat-card">
+          <div class="icon">✅</div>
+          <div class="number" id="statDelivered">0</div>
+          <div class="label">تم التوصيل</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-card">
+        <div class="filters-row">
+          <div class="filter-group">
+            <label>الحالة:</label>
+            <select id="filterStatus" onchange="applyFilters()">
+              <option value="all">الكل</option>
+              <option value="new">جديد</option>
+              <option value="contacted">تم التواصل</option>
+              <option value="confirmed">مؤكد</option>
+              <option value="delivered">تم التوصيل</option>
+              <option value="cancelled">ملغى</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>الولاية:</label>
+            <select id="filterWilaya" onchange="applyFilters()">
+              <option value="all">الكل</option>
+            </select>
+          </div>
+          <button class="btn" onclick="exportCSV()" style="margin-right:auto;">📥 تصدير CSV</button>
+        </div>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="table-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الهاتف</th>
+                <th>الولاية</th>
+                <th>الكمية</th>
+                <th>المقاسات</th>
+                <th>النماذج</th>
+                <th>السعر</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr><td colspan="10"><div class="loading-state"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-box">
+      <h3>📋 تفاصيل الطلب</h3>
+      <div id="detailContent"></div>
+      <button class="modal-close" onclick="closeDetail()">حسنا</button>
+    </div>
+  </div>
+
+  <!-- Script Code Modal -->
+  <div class="modal-overlay" id="scriptModal">
+    <div class="modal-box" style="max-width:600px;">
+      <h3>📋 كود Google Apps Script</h3>
+      <p style="font-size:0.85rem; color:var(--amber-700); margin-bottom:8px;">انسخ هذا الكود كاملاً والصقه في Apps Script:</p>
+      <div class="code-block" id="scriptCode"></div>
+      <button class="btn btn-primary" onclick="copyScript()" style="width:100%; margin-top:8px;">📋 نسخ الكود</button>
+      <button class="modal-close" onclick="closeScriptModal()">إغلاق</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================
+    // CONFIG
+    // ============================
+    const ADMIN_PASSWORD = 'lamsa2024'; // ← غيّر كلمة السر هنا
+    let SHEETS_URL = localStorage.getItem('lamsa_sheets_url') || '';
+    let allOrders = [];
+
+    // Wilayas for filter
+    const wilayas = [
+      "أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار",
+      "البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر",
+      "الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة",
+      "قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض",
+      "إليزي","برج بوعريريج","بومرداس","الطارف","تندوف","تيسمسيلت","الوادي",
+      "خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت",
+      "غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس",
+      "عين صالح","عين قزام","توقرت","جانت","المغير","المنيعة"
+    ];
+
+    // Populate wilaya filter
+    const filterWilaya = document.getElementById('filterWilaya');
+    wilayas.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w; opt.textContent = w;
+      filterWilaya.appendChild(opt);
+    });
+
+    // Load saved URL
+    if (SHEETS_URL) {
+      document.getElementById('sheetsUrlInput').value = SHEETS_URL;
+    }
+
+    // ============================
+    // LOGIN
+    // ============================
+    function handleLogin() {
+      const pwd = document.getElementById('passwordInput').value;
+      if (pwd === ADMIN_PASSWORD) {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboard').classList.add('show');
+        loadOrders();
+      } else {
+        document.getElementById('loginError').textContent = 'كلمة المرور غالطة';
+      }
+    }
+
+    function handleLogout() {
+      document.getElementById('dashboard').classList.remove('show');
+      document.getElementById('loginPage').style.display = 'flex';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('loginError').textContent = '';
+    }
+
+    // ============================
+    // LOAD ORDERS FROM SHEETS
+    // ============================
+    async function loadOrders() {
+      const tbody = document.getElementById('ordersBody');
+      tbody.innerHTML = '<tr><td colspan="10"><div class="loading-state"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div></td></tr>';
+
+      if (!SHEETS_URL) {
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">🔗 لازم تربط Google Sheets أولًا!<br/><small style="color:var(--gray-400);">اضغط ⚙️ إعدادات فوق وحط الرابط</small></div></td></tr>';
+        return;
+      }
+
+      try {
+        const response = await fetch(SHEETS_URL + '?action=read', { mode: 'cors' });
+        const data = await response.json();
+
+        if (data.orders && Array.isArray(data.orders)) {
+          allOrders = data.orders;
+        } else if (Array.isArray(data)) {
+          allOrders = data;
+        } else {
+          allOrders = [];
+        }
+
+        applyFilters();
+        updateStats();
+      } catch (err) {
+        console.error('Load error:', err);
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">❌ ما قدرناش نحمّلو الطلبات<br/><small style="color:var(--gray-400);">تأكد أن رابط Google Sheets صحيح و الكود معدّل</small></div></td></tr>';
+      }
+    }
+
+    function handleRefresh() { loadOrders(); }
+
+    // ============================
+    // FILTERS
+    // ============================
+    function applyFilters() {
+      const status = document.getElementById('filterStatus').value;
+      const wilaya = document.getElementById('filterWilaya').value;
+
+      let filtered = [...allOrders];
+      if (status !== 'all') filtered = filtered.filter(o => (o.status || 'new') === status);
+      if (wilaya !== 'all') filtered = filtered.filter(o => o.wilaya === wilaya);
+
+      renderTable(filtered);
+      updateStats();
+    }
+
+    // ============================
+    // RENDER TABLE
+    // ============================
+    const statusLabels = {
+      new:'جديد', contacted:'تم التواصل', confirmed:'مؤكد',
+      delivered:'تم التوصيل', cancelled:'ملغى'
+    };
+    const statusClasses = {
+      new:'status-new', contacted:'status-contacted', confirmed:'status-confirmed',
+      delivered:'status-delivered', cancelled:'status-cancelled'
+    };
+
+    function renderTable(orders) {
+      const tbody = document.getElementById('ordersBody');
+
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">لا توجد طلبات</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map((o, i) => `
+        <tr>
+          <td style="font-weight:600">${esc(o.name)}</td>
+          <td class="phone-cell">${esc(o.phone)}</td>
+          <td>${esc(o.wilaya)}</td>
+          <td>${o.quantity}</td>
+          <td style="font-size:0.78rem">${esc(o.sizes)}</td>
+          <td style="font-size:0.78rem">${esc(o.models)}</td>
+          <td style="font-weight:700">${Number(o.totalPrice||0).toLocaleString()} د.ج</td>
+          <td><span class="status-badge ${statusClasses[o.status||'new']||'status-new'}">${statusLabels[o.status||'new']||o.status}</span></td>
+          <td style="font-size:0.78rem; white-space:nowrap">${o.date || o.createdAt || ''}</td>
+          <td>
+            <div class="action-cell">
+              <button class="view-btn" onclick="viewDetail(${i})">👁️</button>
+              <select class="status-select" onchange="updateStatus(${i}, this.value)">
+                <option value="new" ${(o.status||'new')==='new'?'selected':''}>جديد</option>
+                <option value="contacted" ${o.status==='contacted'?'selected':''}>تواصل</option>
+                <option value="confirmed" ${o.status==='confirmed'?'selected':''}>مؤكد</option>
+                <option value="delivered" ${o.status==='delivered'?'selected':''}>تم</option>
+                <option value="cancelled" ${o.status==='cancelled'?'selected':''}>ملغى</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.textContent = String(str);
+      return d.innerHTML;
+    }
+
+    // ============================
+    // UPDATE STATS
+    // ============================
+    function updateStats() {
+      document.getElementById('statTotal').textContent = allOrders.length;
+      document.getElementById('statNew').textContent = allOrders.filter(o => (o.status||'new') === 'new').length;
+      document.getElementById('statRevenue').textContent = allOrders.reduce((s, o) => s + Number(o.totalPrice||0), 0).toLocaleString();
+      document.getElementById('statDelivered').textContent = allOrders.filter(o => o.status === 'delivered').length;
+    }
+
+    // ============================
+    // VIEW DETAIL
+    // ============================
+    function viewDetail(index) {
+      const filtered = getFilteredOrders();
+      const o = filtered[index];
+      if (!o) return;
+
+      document.getElementById('detailContent').innerHTML = `
+        <div class="detail-row"><span class="dlabel">الاسم</span><span class="dvalue">${esc(o.name)}</span></div>
+        <div class="detail-row"><span class="dlabel">الهاتف</span><span class="dvalue" style="direction:ltr">${esc(o.phone)}</span></div>
+        <div class="detail-row"><span class="dlabel">الولاية</span><span class="dvalue">${esc(o.wilaya)}</span></div>
+        <div class="detail-row"><span class="dlabel">الكمية</span><span class="dvalue">${o.quantity}</span></div>
+        <div class="detail-row"><span class="dlabel">المقاسات</span><span class="dvalue">${esc(o.sizes)}</span></div>
+        <div class="detail-row"><span class="dlabel">النماذج</span><span class="dvalue">${esc(o.models)}</span></div>
+        <div class="detail-row"><span class="dlabel">السعر الإجمالي</span><span class="dvalue" style="font-weight:800">${Number(o.totalPrice||0).toLocaleString()} د.ج</span></div>
+        <div class="detail-row"><span class="dlabel">الحالة</span><span class="dvalue"><span class="status-badge ${statusClasses[o.status||'new']||'status-new'}">${statusLabels[o.status||'new']||o.status}</span></span></div>
+        <div class="detail-row"><span class="dlabel">التاريخ</span><span class="dvalue">${o.date || o.createdAt || ''}</span></div>
+      `;
+      document.getElementById('detailModal').classList.add('show');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailModal').classList.remove('show');
+    }
+
+    function getFilteredOrders() {
+      const status = document.getElementById('filterStatus').value;
+      const wilaya = document.getElementById('filterWilaya').value;
+      let filtered = [...allOrders];
+      if (status !== 'all') filtered = filtered.filter(o => (o.status||'new') === status);
+      if (wilaya !== 'all') filtered = filtered.filter(o => o.wilaya === wilaya);
+      return filtered;
+    }
+
+    // ============================
+    // UPDATE STATUS
+    // ============================
+    async function updateStatus(index, newStatus) {
+      const filtered = getFilteredOrders();
+      const o = filtered[index];
+      if (!o || !SHEETS_URL) return;
+
+      // Find in allOrders and update
+      const idx = allOrders.findIndex(a =>
+        a.name === o.name && a.phone === o.phone && a.date === o.date
+      );
+      if (idx !== -1) allOrders[idx].status = newStatus;
+
+      // Push to Google Sheets
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'updateStatus', name: o.name, phone: o.phone, date: o.date, status: newStatus })
+        });
+      } catch (e) {
+        // non-critical
+      }
+
+      applyFilters();
+    }
+
+    // ============================
+    // SETTINGS
+    // ============================
+    function toggleSetup() {
+      const card = document.getElementById('setupCard');
+      card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function saveSheetsUrl() {
+      const url = document.getElementById('sheetsUrlInput').value.trim();
+      SHEETS_URL = url;
+      localStorage.setItem('lamsa_sheets_url', url);
+
+      const msg = document.getElementById('sheetsSaveMsg');
+      if (url) {
+        msg.textContent = '✅ تم الحفظ! اضغط 🔄 تحديث لتحميل الطلبات';
+        msg.style.color = 'var(--green-700)';
+      } else {
+        msg.textContent = '⚠️ الرابط فارغ';
+        msg.style.color = 'var(--red-500)';
+      }
+    }
+
+    // ============================
+    // APPS SCRIPT CODE
+    // ============================
+    const APPS_SCRIPT_CODE = `// =========================================
+// Google Apps Script — Lamsa Orders
+// الصق هذا الكود في Extensions → Apps Script
+// =========================================
+
+var SHEET_NAME = 'Orders';
+
+function getOrCreateSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow([
+      'التاريخ', 'الاسم', 'الهاتف', 'الولاية',
+      'الكمية', 'المقاسات', 'النماذج',
+      'السعر الإجمالي', 'الحالة'
+    ]);
+    // Format header
+    var range = sheet.getRange(1, 1, 1, 9);
+    range.setFontWeight('bold');
+    range.setBackground('#fffbeb');
+  }
+  return sheet;
+}
+
+function doPost(e) {
+  var sheet = getOrCreateSheet();
+  var data;
+
+  try {
+    data = JSON.parse(e.postData.contents);
+  } catch(err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: 'Invalid JSON' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Update status action
+  if (data.action === 'updateStatus') {
+    var rows = sheet.getDataRange().getValues();
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][1] === data.name &&
+          rows[i][2] === data.phone &&
+          String(rows[i][0]) === String(data.date)) {
+        sheet.getRange(i + 1, 9).setValue(data.status);
+        break;
+      }
+    }
+    return ContentService.createTextOutput(
+      JSON.stringify({ result: 'updated' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // New order
+  sheet.appendRow([
+    data.createdAt || new Date().toLocaleString('ar-DZ'),
+    data.name,
+    data.phone,
+    data.wilaya,
+    data.quantity,
+    data.sizes,
+    data.models,
+    data.totalPrice,
+    data.status || 'new'
+  ]);
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ result: 'success' })
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  var sheet = getOrCreateSheet();
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var orders = [];
+
+  for (var i = 1; i < rows.length; i++) {
+    var order = {};
+    for (var j = 0; j < headers.length; j++) {
+      order[headers[j]] = rows[i][j];
+    }
+    orders.push(order);
+  }
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ orders: orders })
+  ).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+    function showScriptCode() {
+      document.getElementById('scriptCode').textContent = APPS_SCRIPT_CODE;
+      document.getElementById('scriptModal').classList.add('show');
+    }
+
+    function closeScriptModal() {
+      document.getElementById('scriptModal').classList.remove('show');
+    }
+
+    function copyScript() {
+      navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(() => {
+        const btn = event.target;
+        btn.textContent = '✅ تم النسخ!';
+        setTimeout(() => { btn.textContent = '📋 نسخ الكود'; }, 2000);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = APPS_SCRIPT_CODE;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+    }
+
+    // ============================
+    // EXPORT CSV
+    // ============================
+    function exportCSV() {
+      const filtered = getFilteredOrders();
+      if (filtered.length === 0) return;
+
+      const headers = ['التاريخ','الاسم','الهاتف','الولاية','الكمية','المقاسات','النماذج','السعر','الحالة'];
+      const rows = filtered.map(o => [
+        o.date || o.createdAt || '',
+        o.name || '',
+        o.phone || '',
+        o.wilaya || '',
+        o.quantity || '',
+        o.sizes || '',
+        o.models || '',
+        o.totalPrice || '',
+        statusLabels[o.status||'new'] || o.status || ''
+      ]);
+
+      const csvContent = '\uFEFF' + [headers, ...rows]
+        .map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(','))
+        .join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'lamsa-orders-' + new Date().toISOString().split('T')[0] + '.csv';
+      link.click();
+    }
+
+    // ============================
+    // CLOSE MODALS ON OVERLAY CLICK
+    // ============================
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDetail();
+    });
+    document.getElementById('scriptModal').addEventListener('click', function(e) {
+      if (e.target === this) closeScriptModal();
+    });
+  </script>
+</body>
+</html>
