@@ -19,7 +19,6 @@
       --blue-100:#dbeafe;--blue-600:#2563eb;--blue-800:#1e40af;
       --yellow-100:#fef9c3;--yellow-800:#854d0e;
       --emerald-100:#d1fae5;--emerald-800:#065f46;
-      --purple-100:#f3e8ff;--purple-600:#9333ea;
       --white:#ffffff;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;
     }
     html { scroll-behavior: smooth; }
@@ -85,14 +84,21 @@
     }
     .setup-card h3 { font-size:1.1rem; font-weight:700; color:var(--amber-900); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
     .setup-card p { color:var(--amber-700); font-size:0.9rem; margin-bottom:12px; line-height:1.8; }
-    .setup-card ol { color:var(--amber-700); font-size:0.85rem; padding-right:20px; margin-bottom:16px; line-height:2; }
+    .setup-card ol { color:var(--amber-700); font-size:0.85rem; padding-right:20px; margin-bottom:16px; line-height:2.2; }
     .setup-card ol code { background:var(--amber-100); padding:2px 6px; border-radius:4px; font-size:0.8rem; direction:ltr; }
-    .setup-card .url-row { display:flex; gap:8px; }
+    .setup-card .field { margin-bottom:12px; }
+    .setup-card .field label { display:block; font-weight:600; color:var(--amber-900); margin-bottom:4px; font-size:0.85rem; }
     .setup-card input {
-      flex:1; padding:12px 14px; border:1px solid var(--amber-200); border-radius:10px;
+      width:100%; padding:12px 14px; border:1px solid var(--amber-200); border-radius:10px;
       font-size:0.9rem; direction:ltr; color:var(--gray-700);
     }
     .setup-card input:focus { outline:none; border-color:var(--amber-500); }
+    .code-block {
+      background:var(--gray-700); color:#e5e7eb; padding:16px; border-radius:10px;
+      font-family:monospace; font-size:0.78rem; line-height:1.7; overflow-x:auto;
+      direction:ltr; text-align:left; margin:12px 0; white-space:pre;
+      max-height:300px; overflow-y:auto;
+    }
 
     /* STATS */
     .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
@@ -117,6 +123,12 @@
       font-size:0.85rem; color:var(--amber-900); background:var(--white);
     }
     .filter-group select:focus { outline:none; border-color:var(--amber-500); }
+    .search-input {
+      padding:8px 12px; border:1px solid var(--amber-200); border-radius:8px;
+      font-size:0.85rem; color:var(--amber-900); background:var(--white);
+      min-width:180px;
+    }
+    .search-input:focus { outline:none; border-color:var(--amber-500); }
 
     /* TABLE */
     .table-card {
@@ -128,14 +140,20 @@
     thead { background:var(--amber-50); }
     th {
       padding:12px 14px; text-align:right; font-weight:700; color:var(--amber-900);
-      border-bottom:1px solid var(--amber-200); white-space:nowrap;
+      border-bottom:1px solid var(--amber-200); white-space:nowrap; cursor:pointer;
+      user-select:none;
     }
+    th:hover { background:var(--amber-100); }
     td {
       padding:10px 14px; border-bottom:1px solid var(--amber-100); color:var(--amber-800);
       vertical-align:middle;
     }
     tr:hover td { background:rgba(255,251,235,0.5); }
     .phone-cell { direction:ltr; text-align:left; font-family:monospace; }
+    .phone-link {
+      color:var(--blue-600); text-decoration:none; font-family:monospace; direction:ltr;
+    }
+    .phone-link:hover { text-decoration:underline; }
     .status-badge {
       display:inline-block; padding:3px 10px; border-radius:9999px;
       font-size:0.75rem; font-weight:600;
@@ -156,6 +174,18 @@
       transition:background 0.2s;
     }
     .view-btn:hover { background:var(--amber-200); }
+    .whatsapp-sm-btn {
+      padding:4px 8px; border-radius:6px; border:none;
+      background:#dcfce7; color:var(--green-700); font-size:0.75rem;
+      transition:background 0.2s; text-decoration:none;
+    }
+    .whatsapp-sm-btn:hover { background:#bbf7d0; }
+    .delete-btn {
+      padding:4px 8px; border-radius:6px; border:none;
+      background:var(--red-100); color:var(--red-700); font-size:0.75rem;
+      transition:background 0.2s;
+    }
+    .delete-btn:hover { background:var(--red-200); }
 
     .empty-state { text-align:center; padding:48px 16px; color:var(--amber-600); }
     .loading-state { text-align:center; padding:48px 16px; }
@@ -166,7 +196,15 @@
     }
     @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* DETAIL MODAL */
+    /* SYNC BAR */
+    .sync-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 0; margin-bottom:12px; font-size:0.8rem; color:var(--amber-600);
+    }
+    .sync-bar .auto-refresh { display:flex; align-items:center; gap:6px; }
+    .sync-bar .auto-refresh input { accent-color:var(--amber-700); }
+
+    /* MODALS */
     .modal-overlay {
       display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
       z-index:100; align-items:center; justify-content:center; padding:16px;
@@ -175,6 +213,7 @@
     .modal-box {
       background:var(--white); border-radius:16px; max-width:440px; width:100%;
       padding:24px; animation:slideUp 0.3s ease;
+      max-height:90vh; overflow-y:auto;
     }
     @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
     .modal-box h3 { font-size:1.1rem; font-weight:800; color:var(--amber-900); margin-bottom:16px; }
@@ -183,20 +222,21 @@
       padding:10px 0; border-bottom:1px solid var(--amber-100);
     }
     .detail-row .dlabel { color:var(--amber-600); font-size:0.85rem; }
-    .detail-row .dvalue { color:var(--amber-900); font-weight:600; font-size:0.85rem; }
+    .detail-row .dvalue { color:var(--amber-900); font-weight:600; font-size:0.85rem; text-align:left; max-width:60%; }
     .modal-close {
       width:100%; padding:12px; margin-top:16px; border:1px solid var(--amber-200);
       border-radius:10px; background:var(--white); color:var(--amber-800);
       font-size:0.9rem; font-weight:600; transition:background 0.2s;
     }
     .modal-close:hover { background:var(--amber-50); }
-
-    /* SETUP MODAL */
-    .code-block {
-      background:var(--gray-700); color:#e5e7eb; padding:16px; border-radius:10px;
-      font-family:monospace; font-size:0.78rem; line-height:1.7; overflow-x:auto;
-      direction:ltr; text-align:left; margin:12px 0; white-space:pre;
+    .modal-wa-btn {
+      width:100%; padding:12px; margin-top:8px;
+      background:var(--green-600); color:var(--white); border:none;
+      border-radius:10px; font-size:0.9rem; font-weight:700;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      transition:background 0.2s;
     }
+    .modal-wa-btn:hover { background:var(--green-700); }
 
     /* RESPONSIVE */
     @media (max-width:640px) {
@@ -205,6 +245,7 @@
       .filter-group { width:100%; }
       .filter-group select { flex:1; }
       .dash-header { flex-direction:column; gap:12px; }
+      .search-input { min-width:auto; width:100%; }
     }
   </style>
 </head>
@@ -213,7 +254,7 @@
   <!-- LOGIN -->
   <div class="login-page" id="loginPage">
     <div class="login-card">
-      <h2>🔐 لوحة التحكم</h2>
+      <h2>لوحة التحكم</h2>
       <div class="field">
         <label>كلمة المرور</label>
         <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')handleLogin()" />
@@ -226,33 +267,38 @@
   <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
     <div class="container">
-      <!-- Header -->
       <div class="dash-header">
-        <h1>📊 لوحة تحكم لامسة</h1>
+        <h1>لوحة تحكم لامسة</h1>
         <div class="actions">
-          <button class="btn" onclick="toggleSetup()">⚙️ إعدادات</button>
-          <button class="btn" onclick="handleRefresh()">🔄 تحديث</button>
+          <button class="btn" onclick="toggleSetup()">إعدادات</button>
+          <button class="btn" onclick="loadOrders()">تحديث</button>
           <button class="btn btn-danger" onclick="handleLogout()">خروج</button>
         </div>
       </div>
 
-      <!-- Setup Card (hidden by default) -->
+      <!-- Setup Card -->
       <div class="setup-card" id="setupCard" style="display:none;">
-        <h3>🔗 ربط Google Sheets</h3>
-        <p>لربط الطلبات مع Google Sheets، اتبع الخطوات التالية:</p>
+        <h3>ربط Supabase</h3>
+        <p>بدل Google Sheets، نستعملو Supabase — قاعدة بيانات مجانية وسهلة:</p>
         <ol>
-          <li>أنشئ جدول Google Sheet جديد</li>
-          <li>اذهب إلى <code>Extensions → Apps Script</code></li>
-          <li>الصق كود Apps Script (اضغط الزر أسفله لنسخه)</li>
-          <li>اضغط <code>Deploy → New deployment</code> — Type: <code>Web app</code> — Access: <code>Anyone</code></li>
-          <li>انسخ رابط Web App والصقه هنا</li>
+          <li>روح لـ <a href="https://supabase.com" target="_blank" style="color:var(--blue-600)">supabase.com</a> وسجل مجاناً</li>
+          <li>أنشئ مشروع جديد (New Project)</li>
+          <li>روح لـ <code>SQL Editor</code> والصق كود إنشاء الجدول (اضغط الزر أسفله)</li>
+          <li>اضغط <code>Run</code> باش تتنفذ</li>
+          <li>روح لـ <code>Project Settings → API</code></li>
+          <li>انسخ <code>Project URL</code> و <code>anon public</code> key والصقهم هنا</li>
         </ol>
-        <button class="btn" onclick="showScriptCode()" style="margin-bottom:12px;">📋 عرض كود Apps Script</button>
-        <div class="url-row">
-          <input type="text" id="sheetsUrlInput" placeholder="https://script.google.com/macros/s/..." />
-          <button class="btn btn-primary" onclick="saveSheetsUrl()">حفظ</button>
+        <button class="btn" onclick="showSQLCode()" style="margin-bottom:12px;">عرض كود SQL</button>
+        <div class="field">
+          <label>Supabase URL</label>
+          <input type="text" id="supabaseUrlInput" placeholder="https://xxxxx.supabase.co" />
         </div>
-        <div id="sheetsSaveMsg" style="margin-top:8px; font-size:0.85rem;"></div>
+        <div class="field">
+          <label>Supabase Anon Key</label>
+          <input type="text" id="supabaseKeyInput" placeholder="eyJhbGciOiJIUzI1NiIs..." />
+        </div>
+        <button class="btn btn-primary" onclick="saveSupabaseConfig()" style="width:100%;">حفظ الإعدادات</button>
+        <div id="configSaveMsg" style="margin-top:8px; font-size:0.85rem;"></div>
       </div>
 
       <!-- Stats -->
@@ -279,6 +325,20 @@
         </div>
       </div>
 
+      <!-- Sync bar -->
+      <div class="sync-bar">
+        <span id="lastSync">لم يتم التحميل بعد</span>
+        <div class="auto-refresh">
+          <label for="autoRefreshCheck">تحديث تلقائي:</label>
+          <input type="checkbox" id="autoRefreshCheck" onchange="toggleAutoRefresh()" />
+          <select id="refreshInterval" style="padding:4px 8px; border:1px solid var(--amber-200); border-radius:6px; font-size:0.8rem;">
+            <option value="30">30 ثانية</option>
+            <option value="60" selected>1 دقيقة</option>
+            <option value="120">2 دقيقة</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Filters -->
       <div class="filters-card">
         <div class="filters-row">
@@ -299,7 +359,11 @@
               <option value="all">الكل</option>
             </select>
           </div>
-          <button class="btn" onclick="exportCSV()" style="margin-right:auto;">📥 تصدير CSV</button>
+          <div class="filter-group">
+            <label>بحث:</label>
+            <input type="text" class="search-input" id="searchInput" placeholder="اسم أو هاتف..." oninput="applyFilters()" />
+          </div>
+          <button class="btn" onclick="exportCSV()" style="margin-right:auto;">تصدير CSV</button>
         </div>
       </div>
 
@@ -309,15 +373,15 @@
           <table>
             <thead>
               <tr>
-                <th>الاسم</th>
+                <th onclick="sortBy('created_at')">التاريخ</th>
+                <th onclick="sortBy('name')">الاسم</th>
                 <th>الهاتف</th>
-                <th>الولاية</th>
+                <th onclick="sortBy('wilaya')">الولاية</th>
                 <th>الكمية</th>
                 <th>المقاسات</th>
                 <th>النماذج</th>
-                <th>السعر</th>
-                <th>الحالة</th>
-                <th>التاريخ</th>
+                <th onclick="sortBy('total_price')">السعر</th>
+                <th onclick="sortBy('status')">الحالة</th>
                 <th>إجراء</th>
               </tr>
             </thead>
@@ -333,20 +397,24 @@
   <!-- Detail Modal -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-box">
-      <h3>📋 تفاصيل الطلب</h3>
+      <h3>تفاصيل الطلب</h3>
       <div id="detailContent"></div>
+      <button class="modal-wa-btn" id="detailWaBtn" onclick="openWhatsAppFromDetail()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل عبر واتساب
+      </button>
       <button class="modal-close" onclick="closeDetail()">حسنا</button>
     </div>
   </div>
 
-  <!-- Script Code Modal -->
-  <div class="modal-overlay" id="scriptModal">
-    <div class="modal-box" style="max-width:600px;">
-      <h3>📋 كود Google Apps Script</h3>
-      <p style="font-size:0.85rem; color:var(--amber-700); margin-bottom:8px;">انسخ هذا الكود كاملاً والصقه في Apps Script:</p>
-      <div class="code-block" id="scriptCode"></div>
-      <button class="btn btn-primary" onclick="copyScript()" style="width:100%; margin-top:8px;">📋 نسخ الكود</button>
-      <button class="modal-close" onclick="closeScriptModal()">إغلاق</button>
+  <!-- SQL Code Modal -->
+  <div class="modal-overlay" id="sqlModal">
+    <div class="modal-box" style="max-width:650px;">
+      <h3>كود SQL لإنشاء الجدول</h3>
+      <p style="font-size:0.85rem; color:var(--amber-700); margin-bottom:8px;">انسخ هذا الكود والصقه في Supabase → SQL Editor → اضغط Run:</p>
+      <div class="code-block" id="sqlCode"></div>
+      <button class="btn btn-primary" onclick="copySQL()" style="width:100%; margin-top:8px;">نسخ الكود</button>
+      <button class="modal-close" onclick="closeSQLModal()">إغلاق</button>
     </div>
   </div>
 
@@ -355,10 +423,15 @@
     // CONFIG
     // ============================
     const ADMIN_PASSWORD = 'lamsa2024'; // ← غيّر كلمة السر هنا
-    let SHEETS_URL = localStorage.getItem('lamsa_sheets_url') || '';
+    let SB_URL = localStorage.getItem('lamsa_sb_url') || '';
+    let SB_KEY = localStorage.getItem('lamsa_sb_key') || '';
     let allOrders = [];
+    let currentSort = { field: 'created_at', dir: 'desc' };
+    let autoRefreshTimer = null;
+    let currentDetailOrder = null;
 
-    // Wilayas for filter
+    const WHATSAPP_NUMBER = '213XXXXXXXXX'; // ← غيّر هذا
+
     const wilayas = [
       "أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار",
       "البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر",
@@ -378,9 +451,20 @@
       filterWilaya.appendChild(opt);
     });
 
-    // Load saved URL
-    if (SHEETS_URL) {
-      document.getElementById('sheetsUrlInput').value = SHEETS_URL;
+    // Load saved config
+    if (SB_URL) document.getElementById('supabaseUrlInput').value = SB_URL;
+    if (SB_KEY) document.getElementById('supabaseKeyInput').value = SB_KEY;
+
+    // ============================
+    // SUPABASE API HELPERS
+    // ============================
+    function sbHeaders(includeAuth) {
+      const h = {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY
+      };
+      if (includeAuth) h['Authorization'] = 'Bearer ' + SB_KEY;
+      return h;
     }
 
     // ============================
@@ -402,41 +486,53 @@
       document.getElementById('loginPage').style.display = 'flex';
       document.getElementById('passwordInput').value = '';
       document.getElementById('loginError').textContent = '';
+      if (autoRefreshTimer) clearInterval(autoRefreshTimer);
     }
 
     // ============================
-    // LOAD ORDERS FROM SHEETS
+    // LOAD ORDERS FROM SUPABASE
     // ============================
     async function loadOrders() {
       const tbody = document.getElementById('ordersBody');
       tbody.innerHTML = '<tr><td colspan="10"><div class="loading-state"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div></td></tr>';
 
-      if (!SHEETS_URL) {
-        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">🔗 لازم تربط Google Sheets أولًا!<br/><small style="color:var(--gray-400);">اضغط ⚙️ إعدادات فوق وحط الرابط</small></div></td></tr>';
+      if (!SB_URL || !SB_KEY) {
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">لازم تربط Supabase أولًا!<br/><small style="color:var(--gray-400);">اضغط إعدادات فوق وحط الرابط و المفتاح</small></div></td></tr>';
         return;
       }
 
       try {
-        const response = await fetch(SHEETS_URL + '?action=read', { mode: 'cors' });
-        const data = await response.json();
+        const response = await fetch(SB_URL + '/rest/v1/orders?select=*&order=created_at.desc', {
+          headers: sbHeaders(true)
+        });
 
-        if (data.orders && Array.isArray(data.orders)) {
-          allOrders = data.orders;
-        } else if (Array.isArray(data)) {
-          allOrders = data;
-        } else {
-          allOrders = [];
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
         }
 
+        const data = await response.json();
+        allOrders = Array.isArray(data) ? data : [];
         applyFilters();
         updateStats();
+        document.getElementById('lastSync').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-DZ');
       } catch (err) {
         console.error('Load error:', err);
-        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">❌ ما قدرناش نحمّلو الطلبات<br/><small style="color:var(--gray-400);">تأكد أن رابط Google Sheets صحيح و الكود معدّل</small></div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">ما قدرناش نحمّلو الطلبات<br/><small style="color:var(--gray-400);">تأكد أن إعدادات Supabase صحيحة</small><br/><small style="color:var(--gray-400);">' + esc(err.message) + '</small></div></td></tr>';
       }
     }
 
-    function handleRefresh() { loadOrders(); }
+    // ============================
+    // AUTO REFRESH
+    // ============================
+    function toggleAutoRefresh() {
+      const checked = document.getElementById('autoRefreshCheck').checked;
+      if (checked) {
+        const seconds = parseInt(document.getElementById('refreshInterval').value);
+        autoRefreshTimer = setInterval(loadOrders, seconds * 1000);
+      } else {
+        if (autoRefreshTimer) { clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
+      }
+    }
 
     // ============================
     // FILTERS
@@ -444,13 +540,42 @@
     function applyFilters() {
       const status = document.getElementById('filterStatus').value;
       const wilaya = document.getElementById('filterWilaya').value;
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
 
       let filtered = [...allOrders];
       if (status !== 'all') filtered = filtered.filter(o => (o.status || 'new') === status);
       if (wilaya !== 'all') filtered = filtered.filter(o => o.wilaya === wilaya);
+      if (search) {
+        filtered = filtered.filter(o =>
+          (o.name || '').toLowerCase().includes(search) ||
+          (o.phone || '').includes(search) ||
+          (o.wilaya || '').toLowerCase().includes(search)
+        );
+      }
+
+      // Sorting
+      filtered.sort((a, b) => {
+        let valA = a[currentSort.field] || '';
+        let valB = b[currentSort.field] || '';
+        if (currentSort.field === 'total_price') { valA = Number(valA) || 0; valB = Number(valB) || 0; }
+        if (currentSort.field === 'created_at') { valA = new Date(valA).getTime() || 0; valB = new Date(valB).getTime() || 0; }
+        if (valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+        if (valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+        return 0;
+      });
 
       renderTable(filtered);
       updateStats();
+    }
+
+    function sortBy(field) {
+      if (currentSort.field === field) {
+        currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.field = field;
+        currentSort.dir = 'desc';
+      }
+      applyFilters();
     }
 
     // ============================
@@ -467,37 +592,44 @@
 
     function renderTable(orders) {
       const tbody = document.getElementById('ordersBody');
-
       if (orders.length === 0) {
         tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state">لا توجد طلبات</div></td></tr>';
         return;
       }
 
-      tbody.innerHTML = orders.map((o, i) => `
+      tbody.innerHTML = orders.map(o => {
+        const idx = allOrders.indexOf(o);
+        const date = o.created_at ? new Date(o.created_at).toLocaleString('ar-DZ') : '';
+        const phoneClean = (o.phone || '').replace(/^0/, '213');
+        return `
         <tr>
+          <td style="font-size:0.78rem; white-space:nowrap">${esc(date)}</td>
           <td style="font-weight:600">${esc(o.name)}</td>
-          <td class="phone-cell">${esc(o.phone)}</td>
+          <td class="phone-cell">
+            <a href="https://wa.me/${phoneClean}" target="_blank" class="phone-link">${esc(o.phone)}</a>
+          </td>
           <td>${esc(o.wilaya)}</td>
           <td>${o.quantity}</td>
           <td style="font-size:0.78rem">${esc(o.sizes)}</td>
           <td style="font-size:0.78rem">${esc(o.models)}</td>
-          <td style="font-weight:700">${Number(o.totalPrice||0).toLocaleString()} د.ج</td>
+          <td style="font-weight:700">${Number(o.total_price||0).toLocaleString()} د.ج</td>
           <td><span class="status-badge ${statusClasses[o.status||'new']||'status-new'}">${statusLabels[o.status||'new']||o.status}</span></td>
-          <td style="font-size:0.78rem; white-space:nowrap">${o.date || o.createdAt || ''}</td>
           <td>
             <div class="action-cell">
-              <button class="view-btn" onclick="viewDetail(${i})">👁️</button>
-              <select class="status-select" onchange="updateStatus(${i}, this.value)">
+              <button class="view-btn" onclick="viewDetail(${idx})">👁️</button>
+              <a href="https://wa.me/${phoneClean}" target="_blank" class="whatsapp-sm-btn">💬</a>
+              <select class="status-select" onchange="updateStatus(${idx}, this.value)">
                 <option value="new" ${(o.status||'new')==='new'?'selected':''}>جديد</option>
                 <option value="contacted" ${o.status==='contacted'?'selected':''}>تواصل</option>
                 <option value="confirmed" ${o.status==='confirmed'?'selected':''}>مؤكد</option>
                 <option value="delivered" ${o.status==='delivered'?'selected':''}>تم</option>
                 <option value="cancelled" ${o.status==='cancelled'?'selected':''}>ملغى</option>
               </select>
+              <button class="delete-btn" onclick="deleteOrder(${idx})">🗑️</button>
             </div>
           </td>
-        </tr>
-      `).join('');
+        </tr>`;
+      }).join('');
     }
 
     function esc(str) {
@@ -513,7 +645,7 @@
     function updateStats() {
       document.getElementById('statTotal').textContent = allOrders.length;
       document.getElementById('statNew').textContent = allOrders.filter(o => (o.status||'new') === 'new').length;
-      document.getElementById('statRevenue').textContent = allOrders.reduce((s, o) => s + Number(o.totalPrice||0), 0).toLocaleString();
+      document.getElementById('statRevenue').textContent = allOrders.reduce((s, o) => s + Number(o.total_price||0), 0).toLocaleString();
       document.getElementById('statDelivered').textContent = allOrders.filter(o => o.status === 'delivered').length;
     }
 
@@ -521,9 +653,10 @@
     // VIEW DETAIL
     // ============================
     function viewDetail(index) {
-      const filtered = getFilteredOrders();
-      const o = filtered[index];
+      const o = allOrders[index];
       if (!o) return;
+      currentDetailOrder = o;
+      const date = o.created_at ? new Date(o.created_at).toLocaleString('ar-DZ') : '';
 
       document.getElementById('detailContent').innerHTML = `
         <div class="detail-row"><span class="dlabel">الاسم</span><span class="dvalue">${esc(o.name)}</span></div>
@@ -532,53 +665,68 @@
         <div class="detail-row"><span class="dlabel">الكمية</span><span class="dvalue">${o.quantity}</span></div>
         <div class="detail-row"><span class="dlabel">المقاسات</span><span class="dvalue">${esc(o.sizes)}</span></div>
         <div class="detail-row"><span class="dlabel">النماذج</span><span class="dvalue">${esc(o.models)}</span></div>
-        <div class="detail-row"><span class="dlabel">السعر الإجمالي</span><span class="dvalue" style="font-weight:800">${Number(o.totalPrice||0).toLocaleString()} د.ج</span></div>
+        <div class="detail-row"><span class="dlabel">السعر الإجمالي</span><span class="dvalue" style="font-weight:800">${Number(o.total_price||0).toLocaleString()} د.ج</span></div>
         <div class="detail-row"><span class="dlabel">الحالة</span><span class="dvalue"><span class="status-badge ${statusClasses[o.status||'new']||'status-new'}">${statusLabels[o.status||'new']||o.status}</span></span></div>
-        <div class="detail-row"><span class="dlabel">التاريخ</span><span class="dvalue">${o.date || o.createdAt || ''}</span></div>
+        <div class="detail-row"><span class="dlabel">التاريخ</span><span class="dvalue">${date}</span></div>
       `;
       document.getElementById('detailModal').classList.add('show');
     }
 
-    function closeDetail() {
-      document.getElementById('detailModal').classList.remove('show');
+    function openWhatsAppFromDetail() {
+      if (!currentDetailOrder) return;
+      const phone = (currentDetailOrder.phone || '').replace(/^0/, '213');
+      const msg = encodeURIComponent('السلام عليكم، بخصوص طلبكم من لامسة...');
+      window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
     }
 
-    function getFilteredOrders() {
-      const status = document.getElementById('filterStatus').value;
-      const wilaya = document.getElementById('filterWilaya').value;
-      let filtered = [...allOrders];
-      if (status !== 'all') filtered = filtered.filter(o => (o.status||'new') === status);
-      if (wilaya !== 'all') filtered = filtered.filter(o => o.wilaya === wilaya);
-      return filtered;
+    function closeDetail() {
+      document.getElementById('detailModal').classList.remove('show');
+      currentDetailOrder = null;
     }
 
     // ============================
     // UPDATE STATUS
     // ============================
     async function updateStatus(index, newStatus) {
-      const filtered = getFilteredOrders();
-      const o = filtered[index];
-      if (!o || !SHEETS_URL) return;
+      const o = allOrders[index];
+      if (!o || !SB_URL || !SB_KEY) return;
 
-      // Find in allOrders and update
-      const idx = allOrders.findIndex(a =>
-        a.name === o.name && a.phone === o.phone && a.date === o.date
-      );
-      if (idx !== -1) allOrders[idx].status = newStatus;
+      // Optimistic local update
+      allOrders[index].status = newStatus;
+      applyFilters();
 
-      // Push to Google Sheets
+      // Update in Supabase
       try {
-        await fetch(SHEETS_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'updateStatus', name: o.name, phone: o.phone, date: o.date, status: newStatus })
+        await fetch(SB_URL + '/rest/v1/orders?id=eq.' + o.id, {
+          method: 'PATCH',
+          headers: sbHeaders(true),
+          body: JSON.stringify({ status: newStatus })
         });
       } catch (e) {
-        // non-critical
+        console.error('Status update error:', e);
       }
+    }
 
-      applyFilters();
+    // ============================
+    // DELETE ORDER
+    // ============================
+    async function deleteOrder(index) {
+      const o = allOrders[index];
+      if (!o || !SB_URL || !SB_KEY) return;
+
+      if (!confirm('واش متأكد تبي تحذف هذا الطلب؟')) return;
+
+      try {
+        await fetch(SB_URL + '/rest/v1/orders?id=eq.' + o.id, {
+          method: 'DELETE',
+          headers: sbHeaders(true)
+        });
+        allOrders.splice(index, 1);
+        applyFilters();
+      } catch (e) {
+        console.error('Delete error:', e);
+        alert('ما قدرناش نحذفو الطلب');
+      }
     }
 
     // ============================
@@ -589,136 +737,89 @@
       card.style.display = card.style.display === 'none' ? 'block' : 'none';
     }
 
-    function saveSheetsUrl() {
-      const url = document.getElementById('sheetsUrlInput').value.trim();
-      SHEETS_URL = url;
-      localStorage.setItem('lamsa_sheets_url', url);
+    function saveSupabaseConfig() {
+      const url = document.getElementById('supabaseUrlInput').value.trim().replace(/\/$/, '');
+      const key = document.getElementById('supabaseKeyInput').value.trim();
 
-      const msg = document.getElementById('sheetsSaveMsg');
-      if (url) {
-        msg.textContent = '✅ تم الحفظ! اضغط 🔄 تحديث لتحميل الطلبات';
+      SB_URL = url;
+      SB_KEY = key;
+      localStorage.setItem('lamsa_sb_url', url);
+      localStorage.setItem('lamsa_sb_key', key);
+
+      const msg = document.getElementById('configSaveMsg');
+      if (url && key) {
+        msg.textContent = 'تم الحفظ! اضغط تحديث لتحميل الطلبات';
         msg.style.color = 'var(--green-700)';
       } else {
-        msg.textContent = '⚠️ الرابط فارغ';
+        msg.textContent = 'الرابط أو المفتاح فارغ';
         msg.style.color = 'var(--red-500)';
       }
     }
 
     // ============================
-    // APPS SCRIPT CODE
+    // SQL CODE
     // ============================
-    const APPS_SCRIPT_CODE = `// =========================================
-// Google Apps Script — Lamsa Orders
-// الصق هذا الكود في Extensions → Apps Script
-// =========================================
+    const SQL_CODE = `-- ============================================
+-- Lamsa Orders Table — Supabase SQL
+-- الصق هذا الكود في SQL Editor واضغط Run
+-- ============================================
 
-var SHEET_NAME = 'Orders';
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  wilaya TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  sizes TEXT,
+  models TEXT,
+  total_price INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'new',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
-function getOrCreateSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow([
-      'التاريخ', 'الاسم', 'الهاتف', 'الولاية',
-      'الكمية', 'المقاسات', 'النماذج',
-      'السعر الإجمالي', 'الحالة'
-    ]);
-    // Format header
-    var range = sheet.getRange(1, 1, 1, 9);
-    range.setFontWeight('bold');
-    range.setBackground('#fffbeb');
-  }
-  return sheet;
-}
+-- Enable Row Level Security
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
-function doPost(e) {
-  var sheet = getOrCreateSheet();
-  var data;
+-- Allow anyone to INSERT (for the landing page form)
+CREATE POLICY "Allow public insert" ON orders
+  FOR INSERT WITH CHECK (true);
 
-  try {
-    data = JSON.parse(e.postData.contents);
-  } catch(err) {
-    return ContentService.createTextOutput(
-      JSON.stringify({ error: 'Invalid JSON' })
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
+-- Allow anyone to SELECT (for admin panel)
+CREATE POLICY "Allow public select" ON orders
+  FOR SELECT USING (true);
 
-  // Update status action
-  if (data.action === 'updateStatus') {
-    var rows = sheet.getDataRange().getValues();
-    for (var i = 1; i < rows.length; i++) {
-      if (rows[i][1] === data.name &&
-          rows[i][2] === data.phone &&
-          String(rows[i][0]) === String(data.date)) {
-        sheet.getRange(i + 1, 9).setValue(data.status);
-        break;
-      }
-    }
-    return ContentService.createTextOutput(
-      JSON.stringify({ result: 'updated' })
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
+-- Allow anyone to UPDATE (for status changes)
+CREATE POLICY "Allow public update" ON orders
+  FOR UPDATE USING (true);
 
-  // New order
-  sheet.appendRow([
-    data.createdAt || new Date().toLocaleString('ar-DZ'),
-    data.name,
-    data.phone,
-    data.wilaya,
-    data.quantity,
-    data.sizes,
-    data.models,
-    data.totalPrice,
-    data.status || 'new'
-  ]);
+-- Allow anyone to DELETE (for admin panel)
+CREATE POLICY "Allow public delete" ON orders
+  FOR DELETE USING (true);`;
 
-  return ContentService.createTextOutput(
-    JSON.stringify({ result: 'success' })
-  ).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doGet(e) {
-  var sheet = getOrCreateSheet();
-  var rows = sheet.getDataRange().getValues();
-  var headers = rows[0];
-  var orders = [];
-
-  for (var i = 1; i < rows.length; i++) {
-    var order = {};
-    for (var j = 0; j < headers.length; j++) {
-      order[headers[j]] = rows[i][j];
-    }
-    orders.push(order);
-  }
-
-  return ContentService.createTextOutput(
-    JSON.stringify({ orders: orders })
-  ).setMimeType(ContentService.MimeType.JSON);
-}`;
-
-    function showScriptCode() {
-      document.getElementById('scriptCode').textContent = APPS_SCRIPT_CODE;
-      document.getElementById('scriptModal').classList.add('show');
+    function showSQLCode() {
+      document.getElementById('sqlCode').textContent = SQL_CODE;
+      document.getElementById('sqlModal').classList.add('show');
     }
 
-    function closeScriptModal() {
-      document.getElementById('scriptModal').classList.remove('show');
+    function closeSQLModal() {
+      document.getElementById('sqlModal').classList.remove('show');
     }
 
-    function copyScript() {
-      navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(() => {
+    function copySQL() {
+      navigator.clipboard.writeText(SQL_CODE).then(() => {
         const btn = event.target;
-        btn.textContent = '✅ تم النسخ!';
-        setTimeout(() => { btn.textContent = '📋 نسخ الكود'; }, 2000);
+        btn.textContent = 'تم النسخ!';
+        setTimeout(() => { btn.textContent = 'نسخ الكود'; }, 2000);
       }).catch(() => {
-        // Fallback
         const ta = document.createElement('textarea');
-        ta.value = APPS_SCRIPT_CODE;
+        ta.value = SQL_CODE;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
+        const btn = event.target;
+        btn.textContent = 'تم النسخ!';
+        setTimeout(() => { btn.textContent = 'نسخ الكود'; }, 2000);
       });
     }
 
@@ -727,18 +828,18 @@ function doGet(e) {
     // ============================
     function exportCSV() {
       const filtered = getFilteredOrders();
-      if (filtered.length === 0) return;
+      if (filtered.length === 0) { alert('لا توجد طلبات للتصدير'); return; }
 
       const headers = ['التاريخ','الاسم','الهاتف','الولاية','الكمية','المقاسات','النماذج','السعر','الحالة'];
       const rows = filtered.map(o => [
-        o.date || o.createdAt || '',
+        o.created_at ? new Date(o.created_at).toLocaleString('ar-DZ') : '',
         o.name || '',
         o.phone || '',
         o.wilaya || '',
         o.quantity || '',
         o.sizes || '',
         o.models || '',
-        o.totalPrice || '',
+        o.total_price || '',
         statusLabels[o.status||'new'] || o.status || ''
       ]);
 
@@ -753,14 +854,34 @@ function doGet(e) {
       link.click();
     }
 
+    function getFilteredOrders() {
+      const status = document.getElementById('filterStatus').value;
+      const wilaya = document.getElementById('filterWilaya').value;
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+      let filtered = [...allOrders];
+      if (status !== 'all') filtered = filtered.filter(o => (o.status||'new') === status);
+      if (wilaya !== 'all') filtered = filtered.filter(o => o.wilaya === wilaya);
+      if (search) {
+        filtered = filtered.filter(o =>
+          (o.name || '').toLowerCase().includes(search) ||
+          (o.phone || '').includes(search) ||
+          (o.wilaya || '').toLowerCase().includes(search)
+        );
+      }
+      return filtered;
+    }
+
     // ============================
-    // CLOSE MODALS ON OVERLAY CLICK
+    // CLOSE MODALS
     // ============================
     document.getElementById('detailModal').addEventListener('click', function(e) {
       if (e.target === this) closeDetail();
     });
-    document.getElementById('scriptModal').addEventListener('click', function(e) {
-      if (e.target === this) closeScriptModal();
+    document.getElementById('sqlModal').addEventListener('click', function(e) {
+      if (e.target === this) closeSQLModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeDetail(); closeSQLModal(); }
     });
   </script>
 </body>
